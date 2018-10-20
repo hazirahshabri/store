@@ -8,7 +8,7 @@ if(isset($_POST['register'])){
 	$comfirmPassword =$_POST['password2'];
 		if($password==$comfirmPassword){
 		$sql="INSERT INTO users(username,name,password) VALUES ('$username','$name','$password')";
-		$execute = mysqli_query($conn,$sql) or die (mysqli_error($sconn));
+		$execute = mysqli_query($conn,$sql) or die (mysqli_error($conn));
 			if($execute){
 			echo "<script>alert('Register Success!');</script>";
 			echo "<meta http-equiv='refresh' content='0; url=index.php'/>";
