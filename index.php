@@ -48,7 +48,7 @@
 				  
                   <form action="login.php" method="post">
                   <td width="35%" ><h2><font color="#8B008B">LOGIN</font></h2>
-                    Username <input class="input" type="text" name="username" autofocus required><br><br>
+                    User ID <input class="input" type="text" name="staffid" autofocus required><br><br>
                     Password &nbsp;<input class="input" type="password" name="password" required><br><br>
                     <input class="Lbtn" type="submit" name="login" value="LOGIN"><br><br>
 					

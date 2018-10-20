@@ -2,10 +2,10 @@
 session_start();
 include "connection.php";
 
-$id = $_POST['staffID'];
+$username = $_POST['username'];
 $password = $_POST['password'];
 
-$sql = "SELECT staff_id, username, name, password FROM staff WHERE username='$username' and password='$password'";
+$sql = "SELECT user_id, username, name, password FROM users WHERE username='$username' and password='$password'";
 
 $execute = mysqli_query($conn, $sql) or die (mysqli_error($conn));
 
