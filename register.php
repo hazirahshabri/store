@@ -13,7 +13,7 @@ if(isset($_POST['register']))
     
     if($password==$comfirmPassword)
     {
-        $sql="INSERT INTO staff(staffID, staffName, phoneNo, email, password, confirmPassword)VALUES ('$staffid','$name','$email','$phone','$password','$comfirmPassword')";
+        $sql="INSERT INTO staff(staffID, staffName, phoneNo, email, password, comfirmPassword)VALUES ('$staffid','$name','$email','$phone','$password','$comfirmPassword')";
         $execute = mysqli_query($conn,$sql) or die (mysqli_error($conn));
             if($execute)
             {
