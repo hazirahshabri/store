@@ -7,7 +7,7 @@ $password = $_POST['password'];
 
 $sql = "SELECT user_id, username, name, password FROM users WHERE username='$username' and password='$password'";
 
-$execute = mysqli_query($conn, $sql) or die (mysqli_error($sconn));
+$execute = mysqli_query($conn, $sql) or die (mysqli_error($conn));
 
 if(mysqli_num_rows($execute)>0){
 	//otput data of each row
