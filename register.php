@@ -1,23 +1,32 @@
 <?php
 session_start();
 include "connection.php";
-if(isset($_POST['register'])){
-	$userName =$_POST['username'];
+
+if(isset($_POST['register']))
+{
+	$staffid =$_POST['staffid'];
 	$name =$_POST['name'];
+    $email =$_POST['email'];
+    $phone =$_POST['phone'];
 	$password =$_POST['password'];
 	$comfirmPassword =$_POST['password2'];
-		if($password==$comfirmPassword){
-		$sql="INSERT INTO users(username,name,password) VALUES ('$username','$name','$password')";
-		$execute = mysqli_query($conn,$sql) or die (mysqli_error($conn));
-			if($execute){
-			echo "<script>alert('Register Success!');</script>";
-			echo "<meta http-equiv='refresh' content='0; url=index.php'/>";
-			
-			}else{
-				echo "<script>alert('Register Fail!);</script>";
-			}
-		}else{
-			echo "<script>alert('Password not match');</script>";
+    
+    if($password==$comfirmPassword)
+    {
+        $sql="INSERT INTO staff(staffid, name, email, phone, password, password2)VALUES ('$staffid','$name','$email','$phone','$password','$comfirmPassword')";
+        $execute = mysqli_query($conn,$sql) or die (mysqli_error($conn));
+            if($execute)
+            {
+                echo "<script>alert('Register Success!');</script>";
+                echo "<meta http-equiv='refresh' content='0; url=index.php'/>";
+
+            }else
+            {
+                echo "<script>alert('Register Fail!);</script>";
+            }
+    }else
+    {
+        echo "<script>alert('Password not match');</script>";
 	}
 }
 ?>
@@ -72,19 +81,27 @@ if(isset($_POST['register'])){
                   <td width="30%"><h2><font color="#8B008B">REGISTRATION</font></h2>
                     <table border="0" cellpadding="5" cellspacing="0">
                       <tr>
-                        <td>Name</td>
+                        <td>Staff ID</td>
+                        <td><input class="input" type="text" name="staffid" autofocus required></td>
+                      </tr>
+                      <tr>
+                        <td>Staff Name</td>
                         <td><input class="input" type="text" name="name" autofocus required></td>
                       </tr>
                       <tr>
-                        <td>Username</td>
-                        <td><input class="input" type="text" name="username" autofocus required></td>
+                        <td>Email</td>
+                        <td><input class="input" type="email" name="email" autofocus required></td>
+                      </tr>
+                      <tr>
+                        <td>Phone No</td>
+                        <td><input class="input" type="text" name="phone" autofocus required></td>
                       </tr>
                       <tr>
                         <td>Password</td>
                         <td><input class="input" type="password" name="password" required></td>
                       </tr>
                       <tr>
-                        <td>Comfirm Password</td>
+                        <td>Confirm Password</td>
                         <td><input class="input" type="password" name="password2" required></td>
                       </tr>
                       <tr>
