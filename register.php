@@ -1,32 +1,44 @@
-<?php 
+<?php
 session_start();
+if(!isset($_SESSION["LoggedIn"]) || $_SESSION["LoggedIn"] !== true)
+
 include "connection.php";
-if (isset($_POST['register'])) {
-	
+
+if(isset($_POST['register']))
+{
 	$staffid =$_POST['staffid'];
-	$name =$_POST['name'];
+	$name =$_POST['name']; //staffName punya
     $email =$_POST['email'];
     $phone =$_POST['phone'];
 	$password =$_POST['password'];
-	//$comfirmPassword =$_POST['password2']; 
+	$confirmPassword =$_POST['password2']; 
+    
 
-  	$sql_u = "SELECT * FROM staff WHERE staffID='$staffid'";
-  	$res_u = mysqli_query($sql_u);
+	
+    if($password==$confirmPassword)
+    {
+		$salt = "123asdji2od".$password."n3k2oo1";
+		$hash = hash('sha512',$salt);
+		$confirmPassword = $hash;
 
-  	if (mysqli_num_rows($res_u) > 0) {
-  	  $name_error = "Sorry... id already taken"; 	
-  	//}else if(mysqli_num_rows($res_e) > 0){
-  	  //$email_error = "Sorry... email already taken"; 	
-  	}else{
-           $query = "INSERT INTO staff(staffID, staffName, phoneNo, email, password)
-		   VALUES ('$staffid','$name','$phone','$email','$password')";
-           $results = mysqli_query($query);
-           echo 'Saved!';
-           exit();
-  	}
-  }
+        $sql="INSERT INTO staff(staffID, staffName, phoneNo, email, password, confirmPassword)
+			  VALUES ('$staffid','$name','$phone','$email','$hash','$confirmPassword')";
+        $execute = mysqli_query($conn,$sql) or die (mysqli_error($conn));
+            if($execute)
+            {
+                echo "<script>alert('Register Success!');</script>";
+                echo "<meta http-equiv='refresh' content='0; url=index.php'/>";
+
+            }else
+            {
+                echo "<script>alert('Register Fail!);</script>";
+            }
+    }else
+			{
+				echo "<script>alert('Password not match');</script>";
+			}
+}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -50,47 +62,48 @@ if (isset($_POST['register'])) {
       <div class="main">
           <!-- box of header -->
           <div class="header">
-            <table border="0" width="100%" cellpadding="0" cellspacing="0">
-              <tr>
-              
-                <td width="20%" align="center"><h2><font color="#8B008B"> UTeM STUDENT CENTRE STORE MANAGEMENT SYSTEM</font></h2></td>
-              </tr>
+		  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+            <td width="20%" align="center"><h2><font color="#8B008B"> UTeM STUDENT CENTRE STORE MANAGEMENT SYSTEM</font></h2></td>
             </table>
           </div>
           <!-- box of content -->
           <div class="Mcontent">
-            <table align="center" border="0" width="90%" cellpadding="7" cellspacing="0">
-                <tr>
-				<td><form action = "register.php" method ="post">
-                  <td width="30%" align="center" ><h2><font color="#8B008B">REGISTRATION</font></h2> 
+            <table align="center" border="0" width="80%" cellpadding="7" cellspacing="0">
+                
+					<td><form action = "register.php" method ="post">
+					<td width="35%" align="center" ><h2><font color="#8B008B">REGISTRATION</font></h2> 
 
-					Staff ID		<input class="input1" type="text" name="staffid" autofocus required><br><br>
-					Staff Name		<input class="input1" type="text" name="name" autofocus required><br><br>
-					Email			<input class="input1" type="email" name="email" autofocus required><br><br>
-					Phone No		<input class="input1" type="text" name="phone" autofocus required><br><br> <!-- name="X" kena sama dgn dlm bracket post[X] atas & Post tu amik data melalui nama dia --> 
-					Password		<input class="input1" type="password" name="password" required><br><br>
-					Confirm Password<input class="input1" type="password" name="password2" required><br><br>
+					Staff ID		<input class="input1" type="text" name="staffid" maxlength="5" autofocus required><br><br>
+					Staff Name		<input class="input1" type="text" name="name" required><br><br>
+					Email			<input class="input1" type="email" name="email" required><br><br>
+					Phone No		<input class="input1" type="text" name="phone" maxlength="15" required><br><br> <!-- name="X" kena sama dgn dlm bracket post[X] atas & Post tu amik data melalui nama dia --> 
+					Password		<input class="input1" type="password" name="password" maxlength="20" required><br><br>
+					Confirm Password<input class="input1" type="password" name="password2" maxlength="20" required><br><br>
 
 					<input class="Lbtn" type="submit" name="register" value="register"><br><br>
-					<input class="Lbtn" type="reset" name="reset" value="RESET">
+					<input class="Lbtn" type="reset" name="reset" value="RESET"> 
 					</td>
-                  </form>	
-                        <td></td>
-						<td style="border-right: 1px solid #DDA0DD;"> <!-- inline css --></td>
+                    </form>	
+                        
+					<td style="border-right: 1px solid #DDA0DD;"> <!-- inline css --></td>
+					<td></td>
+					<td></td>
+					<td width="15%"><img src="Logo/UTeM.jpg" width="330px" height="300px"></td>
+					<td width="40%">
+					<h2><font color="#8B008B">ABOUT US</font></h2>
 						
-						<td></td>
-						<td width="10%"><img src="Logo/UTeM.jpg" width="350px" height="300px"></td>
-						<td width="30%">
-						<h2><font color="#8B008B">ABOUT US</font></h2>
-						<p> Welcome to our service! <br><br>
-                       Register now as a user to join and using our system. <br><br>
-                       Please insert username and password to register. <br><br>
-					   This system can help you manage student to store their items. Make a booking for student to store their item during semester break. Student can choose the date to keep their item. Room and locker will given by the staff. <br><br>
-					   Enjoy !
-					    <p>
-						</td>
+					<p> Welcome to our service! <br><br>
+                        Register now as a user to join and using our system. <br><br>
+						Please insert your staffid. <br><br>
+						Length of password cannot exceed 20 character. <br><br>
+						This system can help you manage student to store their items. Make a booking for student to store their item during semester break. 
+					    Student can choose the date to keep their item. Room and locker will given by the staff. <br><br>
+					    Enjoy !
+					</p>
+					
+					</td>
                   <td></td>
-                </tr>
+                
               </table>
             
           </div>

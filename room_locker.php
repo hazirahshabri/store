@@ -6,24 +6,12 @@ if(!isset($_SESSION["LoggedIn"]) || $_SESSION["LoggedIn"] !== true)
 	exit;
 }
 include "connection.php";
-$sql ="SELECT studentName, studentID, gender, phoneNo, address, postcode, state, faculty FROM student"; 
+$sql ="SELECT studentName, gender, phoneNo, semester, sessions, roomName,lockerName, student.studentID
+	   FROM student,storedetail, locker, room
+	   WHERE student.studentID = storedetail.studentID 
+	   AND storedetail.lockerID = locker.lockerID
+	   AND locker.roomID = room.roomID"; 
 $result = mysqli_query($conn,$sql) or die (mysqli_error($conn));
-
-if (isset($_GET['studentId'])){
-	$matricNo = $_GET['studentId'];
-	
-	$run = mysqli_query($conn, "select lockerid from locker where lockerid in (select lockerid from storedetail where studentid = (select studentid from student where studentid = '$matricNo'))");
-	
-	if (mysqli_num_rows($run) == 0){
-		mysqli_query($conn,"delete from student where studentid = '$matricNo'");
-		echo "<meta http-equiv = 'refresh' content='0; url=list.php'/>";
-	}
-	else
-	{
-		echo "<meta http-equiv = 'refresh' content='0; url=delete.php?studentId=$matricNo'/>";
-	}
-	
-}
 ?>
 
 <!DOCTYPE html>
@@ -52,38 +40,38 @@ if (isset($_GET['studentId'])){
           </div>
           <!-- box of content -->
           <div class="Mcontent6">
-            <br>
+			<br>
 			<?php
 			if(mysqli_num_rows($result)>0){
+		
 			?>
             <table align="center" border="0" width="70%" cellpadding="5" cellspacing="1">
               <td><hr></td>
-              <td width="35%" align="center"><h2><p><img src="logo/s.png" alt="icon list" width="62" height="42" align="middle" hspace="20"><font color="#8B008B">List of Students</font></h2></td>
+              <td width="35%" align="center"><h2><p><img src="logo/l.jpg" alt="icon list" width="42" height="42" align="middle" hspace="20"><font color="#8B008B">History of Room & Locker</font></h2></td>
               <td><hr></td>
             </table>
-            <!-- List of Students Content -->
-			<table width="580" border="0">
-              <tbody>
+            <!-- List of locker and room Content -->
+			<table width="980" border="0">
+            <tbody>
                 <tr>
                   <td width="225">&nbsp;</td>
-				  <td width="225">&nbsp;</td>
-                  <td width="155"><input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for matric no" maxlength="10" title="Type in a name"></td>
-                  <td width="26">&nbsp;</td>
+                  <td width="155"><input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for matric no" title="Type in a name"></td>
                 </tr>
-              </tbody>
-            </table>
-            </br>
+			</tbody>
+			</table>
+			</br>
             <form action="insert_student.php" method="post">
-              <table id="myTable" align="center" border="1" width="85%" cellpadding="8" cellspacing="0">
-			  <tr align="center">
-				  <th width="7%" style="background-color: #ededed;">No.</th>
+			  <table id="myTable" align="center" border="1" width="70%" cellpadding="8" cellspacing="0">
+                <tr align="center">
+                  <th width="7%" style="background-color: #ededed;">No.</th>
                   <th style="background-color: #ededed;">Student FullName</th>
-				  <th width="15%" style="background-color: #ededed;">Matric No</th>
-				  <th width="3%" style="background-color: #ededed;">Gender</th>
+				  <th width="14%" style="background-color: #ededed;">Matric No</th>
+				  <th width="8%" style="background-color: #ededed;">Gender</th>
                   <th width="10%" style="background-color: #ededed;">Phone No</th>
-                  <th width="20%" style="background-color: #ededed;">Address</th>
-				  <th style="background-color: #ededed;">Faculty</th>
-                  <th style="background-color: #ededed;">Action</th>
+				  <th width="5%" style="background-color: #ededed;">Semester</th>
+				  <th width="8%" style="background-color: #ededed;">Session</th>
+                  <th width="8%" style="background-color: #ededed;">Room</th>
+				  <th width="8%" style="background-color: #ededed;">Locker</th>
                 </tr>
 				
 				<?php
@@ -97,14 +85,12 @@ if (isset($_GET['studentId'])){
 				  <td style="border-bottom: 1px solid #b3b3b3;" align="center"><?php echo $row["studentID"];?></td>
 				  <td style="border-bottom: 1px solid #b3b3b3;" align="center"><?php echo $row["gender"];?></td>
                   <td style="border-bottom: 1px solid #b3b3b3;" align="center"><?php echo $row["phoneNo"];?></td>
-                  <td style="border-bottom: 1px solid #b3b3b3;" align="center"><?php echo $row["address"];?> <?php echo $row["postcode"];?> <?php echo $row["state"];?></td>
-				  <td style="border-bottom: 1px solid #b3b3b3;" align="center"><?php echo $row["faculty"];?></td>
-				  <td style="border-bottom: 1px solid #b3b3b3;" align="center"><a href = "item.php?studentId=<?php echo $row["studentID"];?>">Add Item</a> 
-																													&nbsp 
-																			   <a href = "update.php?studentId=<?php echo $row["studentID"];?>">Update</a> 
-																													&nbsp 
-																			   <a href = "list.php?studentId=<?php echo $row["studentID"];?>">Delete</a</td>
-                </tr>
+				  <td style="border-bottom: 1px solid #b3b3b3;" align="center"><?php echo $row["semester"];?></td>
+				  <td style="border-bottom: 1px solid #b3b3b3;" align="center"><?php echo $row["sessions"];?></td>
+				  <td style="border-bottom: 1px solid #b3b3b3;" align="center"><?php echo $row["roomName"];?></td>
+				  <td style="border-bottom: 1px solid #b3b3b3;" align="center"><?php echo $row["lockerName"];?></td>
+				</tr>
+				
 				<?php
 				$rowNumber++;
 				} 
@@ -115,18 +101,16 @@ if (isset($_GET['studentId'])){
 			  <?php 
 			}else{
 				
-					echo "<p align=center>No student record found</p>";
+					echo "<p align=center>No record of room and locker found</p>";
 	
 				 }
 			  ?>
             </form>
 			
           </div>
-          <!-- box of footer -->
-         
+          
       </div>
   </body>
-  
 <script>
 function myFunction() {
   var input, filter, table, tr, td, i;
@@ -146,5 +130,4 @@ function myFunction() {
   }
 }
 </script>
-  
 </html>
